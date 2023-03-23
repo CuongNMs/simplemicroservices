@@ -2,12 +2,15 @@ package com.cuongnm.customer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService{
 
     private final CustomerRepository customerRepository;
+
+    private final RestTemplate restTemplate;
 
     @Override
     public void registCustomer(CustomerRequest customerRequest) {
@@ -16,7 +19,17 @@ public class CustomerServiceImpl implements CustomerService{
                 .lastName(customerRequest.getLastName())
                 .email(customerRequest.getEmail())
                 .build();
+        customerRepository.saveAndFlush(customer);
 
-        customerRepository.save(customer);
+        FraudCheckResponse response = restTemplate.getForObject("http://localhost:8081/api/v1/fraud-check/{customerId}",
+                FraudCheckResponse.class,
+                customer.getId());
+        if(response.isFraudter()){
+            throw new IllegalStateException("fraudster");
+        }
+
+        // todo: send notification
+
+
     }
 }
