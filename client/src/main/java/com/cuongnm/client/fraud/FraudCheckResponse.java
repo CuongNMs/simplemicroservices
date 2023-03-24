@@ -1,6 +1,5 @@
-package com.cuongnm.customer;
+package com.cuongnm.client.fraud;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FraudCheckResponse {
-    @JsonProperty
-    private boolean isFraudter;
+    private Boolean isFraudster;
 }

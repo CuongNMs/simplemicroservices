@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class FraudCheckImpl implements FraudCheckService{
+public class FraudCheckServiceImpl implements FraudCheckService{
 
     private final FraudCheckHistoryRepository fraudCheckHistoryRepository;
 

@@ -1,10 +1,11 @@
 package com.cuongnm.customer;
 
 import com.cuongnm.amqp.RabbitMQMessageProducer;
+import com.cuongnm.client.fraud.FraudCheckResponse;
+import com.cuongnm.client.fraud.FraudClient;
 import com.cuongnm.client.notification.NotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -12,7 +13,7 @@ public class CustomerServiceImpl implements CustomerService{
 
     private final CustomerRepository customerRepository;
 
-    private final RestTemplate restTemplate;
+    private final FraudClient fraudClient;
 
     private final RabbitMQMessageProducer rabbitMQMessageProducer;
 
@@ -25,10 +26,8 @@ public class CustomerServiceImpl implements CustomerService{
                 .build();
         customerRepository.saveAndFlush(customer);
 
-        FraudCheckResponse response = restTemplate.getForObject("http://FRAUD/api/v1/fraud-check/{customerId}",
-                FraudCheckResponse.class,
-                customer.getId());
-        if(response.isFraudter()){
+        FraudCheckResponse response = fraudClient.isFraudster(customer.getId());
+        if(response.getIsFraudster()){
             throw new IllegalStateException("fraudster");
         }
 
@@ -40,9 +39,6 @@ public class CustomerServiceImpl implements CustomerService{
         );
 
         rabbitMQMessageProducer.publish(notificationRequest, "internal.exchange", "internal.notification.routing-key");
-
-        // todo: send notification
-
 
     }
 }
