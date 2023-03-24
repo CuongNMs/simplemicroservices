@@ -1,5 +1,6 @@
 package com.cuongnm.notification;
 
+import com.cuongnm.client.notification.NotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.cuongnm.notification;
+package com.cuongnm.client.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
